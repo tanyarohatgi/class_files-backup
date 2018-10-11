@@ -1,0 +1,27 @@
+---
+title: "Poll Results"
+author: "Tanya Rohatgi"
+date: "9/24/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r}
+x <- read_csv("data/elections-poll-me02-1.csv") #always use underscore to get data in the form of tibble when you run x in console
+```
+```{r}
+x %>%
+  count(response) %>% #shows you how many dem, rep, and undecided, because they're all in the response column.
+```
+```{r}
+x %>%
+  group_by(educ) %>%
+  count(response) # this answers the question: how do voting preferences (dem, rep, und) change by education level?
+```
+
+
+

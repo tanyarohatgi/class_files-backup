@@ -1,0 +1,65 @@
+---
+title: "Elections"
+author: "Tanya Rohatgi"
+date: "9/19/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(gov.1005.data)
+```
+
+
+```{r}
+data("elections")
+show(elections)
+nrow(elections)
+elections %>%
+  mutate(dem_per = dem / (rep + dem + other), other_per = other / (rep + dem + other)) %>%
+  ggplot(aes(x = dem_per, y = rep_per, color = other_per)) + geom_point(alpha = 0.6) + facet_wrap(~ year)# every dot represents a county by year, then with facet wrap it gives different plots per year
+```
+```{r}
+data("elections")
+show(elections)
+nrow(elections)
+elections %>%
+  filter(! year %in% c(1960, 1968)) %>% #getting rid of what seem like outlier years after first plotting
+  mutate(dem_per = dem / (rep + dem + other), other_per = other / (rep + dem + other)) %>%
+  ggplot(aes(x = dem_per, y = rep_per, color = other_per)) + geom_point(alpha = 0.6) + facet_wrap(~ year)
+```
+```{r}
+elections %>%
+  filter(state == "virginia") %>%
+  count(county) %>%
+  arrange(n)
+
+elections %>% 
+  distinct(year)
+
+elections %>%
+  filter(str_detect(county, "manass")) %>%
+  arrange(year) %>%
+  print(n = 25)
+
+elections %>%
+  select(county, state, rep_per) %>%
+  arrange(desc(rep_per))
+
+elections %>%
+  filter(county == "holmes", state == "mississippi") %>%
+  ggplot(aes(year, rep_per)) + geom_line()
+
+elections %>%
+  group_by(county, state) %>%
+  summarise(avg_rep = mean(rep_per)) %>%
+  arrange(desc(avg_rep))
+
+elections %>%
+  filter(county == "jackson", state == "kentucky") %>%
+  ggplot(aes(year, rep_per)) + geom_line()
+
+```
+
+

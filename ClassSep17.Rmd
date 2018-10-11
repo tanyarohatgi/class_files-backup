@@ -1,0 +1,56 @@
+---
+title: "Election 2016"
+author: "Tanya Rohatgi"
+date: "9/17/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(gov.1005.data)
+```
+
+
+## Question 1
+
+```{r}
+data("votes_2016")
+x <- votes_2016 %>%
+  mutate(demshare = `Hillary Clinton` / totalvote, 
+          repshare = `Donald J. Trump` / totalvote) %>%
+  select(name, demshare, repshare, totalvote)
+  
+q.1 <- x %>%  
+  summarise(meandepshare = mean(demshare), meanrepshare = mean(repshare))
+```
+
+
+## Question 2
+
+```{r}
+ggplot(x, aes(x = demshare)) + geom_histogram(fill = "blue", bins = 100) + ggtitle("Democratic Vote Share by County")
+ggplot(x, aes(x = repshare)) + geom_histogram(fill = "red", bins = 100) + ggtitle("Republican Vote Share by County")
+```
+```{r}
+q.3 <- votes_2016 %>%
+  summarise(totalrepshare = sum(`Donald J. Trump` / sum(totalvote)), totaldemshare = sum(`Hillary Clinton`/sum(totalvote)))
+```
+The republican share of the nation-wide vote was `r q.3$totalrepshare`, or `r round(q.3$totalrepshare, 2)`.
+
+## Question 4
+
+```{r}
+ggplot(x, aes(totalvote, demshare)) + geom_point() + scale_x_log10()
+```
+
+## Question 5
+
+```{r}
+q.5 <- votes_2016 %>%
+  mutate(third = (totalvote - `Donald J. Trump` - `Hillary Clinton`) / totalvote) %>%
+  arrange(desc(third)) %>% print(n = 5)
+```
+
+
+

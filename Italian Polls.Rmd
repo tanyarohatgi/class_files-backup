@@ -1,0 +1,51 @@
+---
+title: "Italian Polls"
+author: "Tanya Rohatgi"
+date: "10/1/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(knitr)
+x <- read_csv("https://pollofpolls.eu/get/polls/IT-parliament/format/csv", guess_max = 3000)
+```
+
+```{r, message=FALSE, warning=FALSE}
+x %>%
+  select(date, firm, n, LN, M5S) %>%
+  gather(key = "party", value = "percentage", LN, M5S) %>%
+  ggplot(aes(date, percentage, color = party)) + geom_point(alpha = 0.3) + xlab("Date") + ylab("Percentage")
+```
+
+The purpose of this document is to show polling results in Italy.
+
+```{r, message=FALSE, warning=FALSE}
+x %>%
+  select(date, firm, n, LN, M5S, PD, FIPDLFI) %>%
+  filter(date >= "2017-09-26") %>%
+  gather(key = "party", value = "percentage", LN:FIPDLFI) %>%
+  ggplot(aes(date, percentage, color = party)) + geom_point(size = 0.6, alpha = 0.3) + geom_smooth() + xlab("Date") + 
+    ylab("Percentage")
+
+```
+
+```{r, warning=FALSE, message=FALSE}
+a <- x %>% 
+  count(firm) %>% 
+  arrange(desc(nn)) %>% # shows the firms and how many total polls they've done
+  filter(nn > 100) # takes only firms that have done more than a 100 polls
+
+x %>%
+  filter(firm %in% a$firm) %>%
+  select(date, firm, n, LN, M5S, PD, FIPDLFI) %>%
+  filter(date >= "2017-09-26") %>%
+  gather(key = "party", value = "percentage", LN:FIPDLFI) %>%
+  ggplot(aes(date, percentage, color = party)) + geom_point(size = 0.6, alpha = 0.3) + geom_smooth() + xlab("Date") + 
+    ylab("Percentage")
+```
+
+
+
+
